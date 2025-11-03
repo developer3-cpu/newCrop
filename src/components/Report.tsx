@@ -767,7 +767,15 @@ export default function Report() {
         </p>
       </footer> */}
 
-      <button id="toTop" className="to-top" aria-label={t('report.misc.backToTop')} ref={toTopRef}>↑</button>
+      <button
+        id="toTop"
+        className="to-top"
+        aria-label={t('report.misc.backToTop')}
+        ref={toTopRef}
+        style={{ backgroundColor: "#48f7c8" }}
+      >
+        ↑
+      </button>
 
       {/* Styles ported from styles.css */}
       <style jsx global>{`

@@ -361,7 +361,7 @@ export default function BananaOne({ initialCategory = "fruits", initialFruit = "
           sessionStorage.setItem("report:activeCategory", k);
           sessionStorage.setItem("ui:tablistVisible", "true");
         } catch {}
-        setModeStatus(`${t(`categories.${k}`)} selected`);
+        // setModeStatus(`${t(`categories.${k}`)} selected`);
         setTimeout(() => setModeStatus(null), 1500);
         requestAnimationFrame(() => {
           try { tabsFocusRef.current?.focus(); } catch {}
@@ -443,7 +443,15 @@ export default function BananaOne({ initialCategory = "fruits", initialFruit = "
         </main>
       </div>
 
-      <button id="toTop" className="to-top" aria-label={t("report.misc.backToTop")} ref={toTopRef}>↑</button>
+      <button
+        id="toTop"
+        className="to-top"
+        aria-label={t("report.misc.backToTop")}
+        ref={toTopRef}
+        style={{ backgroundColor: "#48f7c8" }}
+      >
+        ↑
+      </button>
 
       <style jsx global>{`
         :root {
