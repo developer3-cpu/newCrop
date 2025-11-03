@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { useI18n } from "@/i18n/I18nContext";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -38,11 +40,62 @@ function labelFor(key: SpiceKey): string {
 
 export default function SpicesTab() {
   const { t } = useI18n();
+  const router = useRouter();
+  const [animatingKey, setAnimatingKey] = useState<string | null>(null);
+
+  const cards = useMemo(
+    () =>
+      SPICES.map((s, idx) => ({
+        ...s,
+        id: s.key,
+        name: t(`cropNames.${s.key}`),
+        attrs: { image: s.src, accent: s.bg },
+        index: idx,
+      })),
+    [t]
+  );
+
+  const isSpiceKey = (v: string): v is SpiceKey =>
+    ["coriander", "Cumin", "garlic", "ginger", "DryChilli", "turmeric"].includes(v as SpiceKey);
+
+  const handleNavigate = (card: (typeof cards)[number]) => {
+    try {
+      if (!card || !isSpiceKey(card.key) || !card.name) {
+        console.warn("Invalid spice card data:", card);
+        router.push(`/report?category=spices`);
+        return;
+      }
+      try {
+        sessionStorage.setItem("report:activeCategory", "spices");
+        sessionStorage.setItem("ui:tablistVisible", "true");
+      } catch {}
+
+      setAnimatingKey(card.key);
+      const params = new URLSearchParams({
+        category: "spices",
+        spice: card.key,
+        id: String(card.id),
+        name: card.name,
+        attrs: JSON.stringify(card.attrs),
+      });
+      const target = `/report?${params.toString()}`;
+      setTimeout(() => router.push(target), 160);
+    } catch (err) {
+      console.error("Navigation failed:", err);
+    }
+  };
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {SPICES.map((item, idx) => (
-          <article key={idx} className={`bento p-4 group ${item.bg} flex flex-col items-center gap-3`}>
+        {cards.map((item) => (
+          <article
+            key={item.key}
+            onClick={() => handleNavigate(item)}
+            className={`bento p-4 group ${item.bg} flex flex-col items-center gap-3 cursor-pointer transition-all duration-200 ease-out ${
+              animatingKey === item.key ? "opacity-70 scale-[0.98]" : "hover:scale-[1.02]"
+            }`}
+            aria-label={t(`cropNames.${item.key}`)}
+          >
             <div
               className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-black/10 shadow-sm transition-colors duration-300 ease-in-out ${item.bg} ${item.hoverBg}`}
             >

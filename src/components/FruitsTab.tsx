@@ -46,14 +46,26 @@ export default function FruitsTab() {
 
       {/* Grid of fruit cards with direct links to report */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {FRUITS.map((item) => (
-          <Link
-            key={item.key}
-            href={`/report?fruit=${item.key}#intro`}
-            prefetch={false}
-            className={`bento p-4 group flex flex-col items-center gap-3`}
-            aria-label={t(`cropNames.${item.key}`)}
-          >
+        {FRUITS.map((item) => {
+          const handleClick = () => {
+            try {
+              // Ensure tablist remains visible when navigating from homepage
+              sessionStorage.setItem("ui:tablistVisible", "true");
+              // Set the active category to fruits for proper navigation state
+              sessionStorage.setItem("report:activeCategory", "fruits");
+            } catch {}
+          };
+
+          return (
+            <Link
+              key={item.key}
+              href={`/report?fruit=${item.key}`}
+              prefetch={false}
+              className={`bento p-4 group flex flex-col items-center gap-3`}
+              aria-label={t(`cropNames.${item.key}`)}
+              onClick={handleClick}
+              data-clean-nav="true"
+            >
             <div
               className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-black/10 shadow-sm transition-colors duration-300 ease-out ${item.bg} ${item.hoverBg}`}
             >
@@ -70,7 +82,8 @@ export default function FruitsTab() {
               {t(`cropNames.${item.key}`)}
             </span>
           </Link>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

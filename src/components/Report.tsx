@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import NextImage from "next/image";
+import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n/I18nContext";
 import Header from './Header';
 import ReportTabs from './ReportTabs';
@@ -18,6 +19,7 @@ import PlantationCropsNav from './PlantationCropsNav';
 export default function Report() {
   const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
   const withBase = (p: string) => `${BASE}${p}`;
+  const router = useRouter();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
   const sideNavRef = useRef<HTMLDivElement | null>(null);
@@ -35,11 +37,59 @@ export default function Report() {
     | 'pulses'
     | 'plantationCrops';
   const [category, setCategory] = useState<TabKey>('fruits');
+  const isCategoryKey = (v: string | null): v is TabKey => {
+    return (
+      v === 'fruits' ||
+      v === 'vegetables' ||
+      v === 'grains' ||
+      v === 'spices' ||
+      v === 'flowers' ||
+      v === 'cashCrops' ||
+      v === 'oilSeeds' ||
+      v === 'pulses' ||
+      v === 'plantationCrops'
+    );
+  };
+
+  const handleSelectCategory = (next: TabKey) => {
+    setCategory(next);
+    try {
+      sessionStorage.setItem("report:activeCategory", next);
+      const url = new URL(window.location.href);
+      url.searchParams.set('category', next);
+      const newUrl = `${url.pathname}${url.searchParams.toString() ? `?${url.searchParams.toString()}` : ''}`;
+      history.pushState({ category: next }, "", newUrl);
+    } catch {}
+  };
+
+  // Initialize selected tab from URL (category param) and support back/forward
+  useEffect(() => {
+    try {
+      const url = new URL(window.location.href);
+      const catParam = url.searchParams.get('category');
+      if (isCategoryKey(catParam)) {
+        setCategory(catParam);
+      }
+    } catch {}
+
+    const onPop = () => {
+      try {
+        const url = new URL(window.location.href);
+        const catParam = url.searchParams.get('category');
+        if (isCategoryKey(catParam)) {
+          setCategory(catParam);
+        }
+      } catch {}
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
 
   // Local union to avoid referencing dictionaries at type level
   type FruitKey =
     | 'mango'
     | 'banana'
+    | 'bananaOne'
     | 'apple'
     | 'grapes'
     | 'guava'
@@ -53,6 +103,7 @@ export default function Report() {
 
   const fruits: { key: FruitKey; src: string }[] = [
     { key: 'banana', src: withBase('/Fruits/banana.png') },
+    { key: 'bananaOne', src: withBase('/Fruits/banana.png') },
     { key: 'mango', src: withBase('/Fruits/mango.png') },
     { key: 'apple', src: withBase('/Fruits/apple.png') },
     { key: 'grapes', src: withBase('/Fruits/grapes.png') },
@@ -173,11 +224,20 @@ export default function Report() {
     const navLinks = Array.from(nav.querySelectorAll<HTMLAnchorElement>("a"));
     const sideLinks = Array.from(sideNav?.querySelectorAll<HTMLAnchorElement>("a") || []);
 
+    // Restore category from previous navigation if available
+    try {
+      const savedCat = sessionStorage.getItem("report:activeCategory") as typeof category | null;
+      if (savedCat) setCategory(savedCat);
+    } catch {}
+
     // Nav link smooth scroll + highlight
     const linkClick = (e: Event) => {
-      e.preventDefault();
       const a = e.currentTarget as HTMLAnchorElement;
-      const selector = a.getAttribute("href")!;
+      // Allow component-level clean URL handlers to take control
+      if (a.dataset.cleanNav === 'true') return;
+      const selector = a.getAttribute("href") || "";
+      if (!selector.startsWith('#')) return; // allow real navigations
+      e.preventDefault();
       const target = root.querySelector<HTMLElement>(selector);
       if (!target) return;
       const section = target.closest<HTMLElement>(".section") || target;
@@ -243,6 +303,37 @@ export default function Report() {
     setHeaderHeight();
     window.addEventListener("resize", setHeaderHeight);
 
+    // Offset-aware initial scroll after navigation
+    try {
+      const requestedHash = sessionStorage.getItem("report:lastHash") || (window.location.hash || "");
+      if (requestedHash && requestedHash.startsWith('#')) {
+        const target = root.querySelector<HTMLElement>(requestedHash);
+        if (target) {
+          const section = target.closest<HTMLElement>(".section") || target;
+          const firstDetails = section.querySelector("details") as HTMLDetailsElement | null;
+          if (firstDetails) firstDetails.open = true;
+          const headerH =
+            parseInt(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) ||
+            (header?.offsetHeight || 0);
+          const top = section.getBoundingClientRect().top + window.scrollY - headerH - 12;
+          const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const supportsSmooth = (document.documentElement as any).style.scrollBehavior !== undefined;
+          if (supportsSmooth && !prefersReduced) {
+            window.scrollTo({ top, behavior: "smooth" });
+          } else {
+            window.scrollTo({ top });
+          }
+          // Keep URL clean: remove '#intro' while preserving path and query
+          try {
+            const isIntro = requestedHash.toLowerCase() === '#intro';
+            const cleanUrl = `${window.location.pathname}${window.location.search}`;
+            history.replaceState(null, "", isIntro ? cleanUrl : requestedHash);
+          } catch {}
+        }
+        sessionStorage.removeItem("report:lastHash");
+      }
+    } catch {}
+
     // Scrollspy
     const sectionMap = new Map<HTMLElement, HTMLAnchorElement>();
     navLinks.forEach((a) => {
@@ -295,26 +386,27 @@ export default function Report() {
         <Header fixed />
       </div>
       {/* Tab list below header */}
-      <ReportTabs initialActive={category} onSelectCategory={(k) => setCategory(k)} />
+      <ReportTabs initialActive={category} onSelectCategory={handleSelectCategory} />
+    
       <div className="layout" ref={rootRef}>
         {category === 'fruits' ? (
-          <FruitNav ref={sideNavRef} fruits={fruits} />
+          <FruitNav ref={sideNavRef} fruits={fruits} hrefMode="report" />
         ) : category === 'vegetables' ? (
-          <VegetablesNav ref={sideNavRef} vegetables={vegetables} />
+          <VegetablesNav ref={sideNavRef} vegetables={vegetables} hrefMode="report" />
         ) : category === 'grains' ? (
-          <GrainsNav ref={sideNavRef} grains={grains} />
+          <GrainsNav ref={sideNavRef} grains={grains} hrefMode="report" />
         ) : category === 'spices' ? (
-          <SpicesNav ref={sideNavRef} spices={spices} />
+          <SpicesNav ref={sideNavRef} spices={spices} hrefMode="report" />
         ) : category === 'flowers' ? (
-          <FlowersNav ref={sideNavRef} flowers={flowers} />
+          <FlowersNav ref={sideNavRef} flowers={flowers} hrefMode="report" />
         ) : category === 'cashCrops' ? (
-          <CashCropsNav ref={sideNavRef} cashCrops={cashCrops} />
+          <CashCropsNav ref={sideNavRef} cashCrops={cashCrops} hrefMode="report" />
         ) : category === 'oilSeeds' ? (
-          <OilseedsNav ref={sideNavRef} oilseeds={oilseeds} />
+          <OilseedsNav ref={sideNavRef} oilseeds={oilseeds} hrefMode="report" />
         ) : category === 'pulses' ? (
-          <PulsesNav ref={sideNavRef} pulses={pulses} />
+          <PulsesNav ref={sideNavRef} pulses={pulses} hrefMode="report" />
         ) : category === 'plantationCrops' ? (
-          <PlantationCropsNav ref={sideNavRef} plantationCrops={plantationCrops} />
+          <PlantationCropsNav ref={sideNavRef} plantationCrops={plantationCrops} hrefMode="report" />
         ) : null}
 
         <nav className="top-nav" aria-label="Primary" ref={navRef}>
@@ -729,6 +821,9 @@ export default function Report() {
         .top-nav a { display: block; padding: 0.5rem 0.75rem; border-radius: 8px; text-decoration: none; color: var(--text); }
         .top-nav a:hover { background: #f4f6f8; }
         .top-nav a.active { background: #eef7f1; color: var(--primary-ink); border-left: 3px solid var(--primary); }
+        .report-actions { display: flex; align-items: center; justify-content: flex-start; padding: 0.25rem 1rem; }
+        .back-link { appearance: none; border: none; background: transparent; color: var(--primary-ink); cursor: pointer; font-size: 13px; padding: 4px 8px; border-radius: 6px; }
+        .back-link:hover { background: #eef7f1; }
         /* Fruits panel */
         .fruit-list { display: grid; grid-template-columns: 1fr; gap: 0.35rem; }
         .fruit-link { display: grid; grid-template-columns: 48px 1fr; align-items: center; gap: 0.5rem; padding: 0.35rem 0.5rem; border-radius: 8px; text-decoration: none; color: var(--text); }

@@ -1,6 +1,8 @@
 "use client";
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 import { useI18n } from '@/i18n/I18nContext';
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -33,11 +35,62 @@ const PULSES: { key: PulseKey; src: string; bg: string; hoverBg: string }[] = [
 
 export default function PulsesTab() {
   const { t } = useI18n();
+  const router = useRouter();
+  const [animatingKey, setAnimatingKey] = useState<string | null>(null);
+
+  const cards = useMemo(
+    () =>
+      PULSES.map((p, idx) => ({
+        ...p,
+        id: p.key,
+        name: t(`cropNames.${p.key}`),
+        attrs: { image: p.src, accent: p.bg },
+        index: idx,
+      })),
+    [t]
+  );
+
+  const isPulseKey = (v: string): v is PulseKey =>
+    ['bengalGram', 'blackGram', 'greenGram', 'lentil', 'redGram'].includes(v as PulseKey);
+
+  const handleNavigate = (card: (typeof cards)[number]) => {
+    try {
+      if (!card || !isPulseKey(card.key) || !card.name) {
+        console.warn('Invalid pulse card data:', card);
+        router.push(`/report?category=pulses`);
+        return;
+      }
+      try {
+        sessionStorage.setItem('report:activeCategory', 'pulses');
+        sessionStorage.setItem('ui:tablistVisible', 'true');
+      } catch {}
+
+      setAnimatingKey(card.key);
+      const params = new URLSearchParams({
+        category: 'pulses',
+        pulse: card.key,
+        id: String(card.id),
+        name: card.name,
+        attrs: JSON.stringify(card.attrs),
+      });
+      const target = `/report?${params.toString()}`;
+      setTimeout(() => router.push(target), 160);
+    } catch (err) {
+      console.error('Navigation failed:', err);
+    }
+  };
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {PULSES.map((item, idx) => (
-          <article key={idx} className={`bento p-4 group ${item.bg} flex flex-col items-center gap-3`}>
+        {cards.map((item) => (
+          <article
+            key={item.key}
+            onClick={() => handleNavigate(item)}
+            className={`bento p-4 group ${item.bg} flex flex-col items-center gap-3 cursor-pointer transition-all duration-200 ease-out ${
+              animatingKey === item.key ? 'opacity-70 scale-[0.98]' : 'hover:scale-[1.02]'
+            }`}
+            aria-label={t(`cropNames.${item.key}`)}
+          >
             <div
               className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-black/10 shadow-sm transition-colors duration-300 ease-in-out ${item.bg} ${item.hoverBg}`}
             >

@@ -1,14 +1,55 @@
 "use client";
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useI18n } from '@/i18n/I18nContext';
+import { useRouter } from 'next/navigation';
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const withBase = (p: string) => `${BASE}${p}`;
 // for without stick export default function Header() {
 export default function Header({ fixed = false }: { fixed?: boolean }) {
   const { t, languages, setLanguage, language } = useI18n();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  const HOME_URL = process.env.NEXT_PUBLIC_HOME_URL || '/' ;
+
+  const isValidUrl = (url: string) => {
+    try {
+      const u = new URL(url);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  const goHome = useCallback(async () => {
+    const target = HOME_URL;
+    if (!isValidUrl(target)) {
+      router.push('/');
+      return;
+    }
+
+    const current = typeof window !== 'undefined' ? window.location : undefined;
+    const tUrl = new URL(target);
+
+    if (current && tUrl.origin === current.origin) {
+      try {
+        router.push(tUrl.pathname + tUrl.search + tUrl.hash);
+        return;
+      } catch {
+        window.location.assign(target);
+        return;
+      }
+    }
+
+    try {
+      await fetch(target, { method: 'HEAD', mode: 'no-cors' });
+      window.location.assign(target);
+    } catch {
+      router.push('/');
+    }
+  }, [HOME_URL, router]);
 
   return (
     // for without sticky <header className="w-full sticky top-0 z-30 bg-[var(--farm-sky)]/80 backdrop-blur bento">
@@ -18,7 +59,21 @@ export default function Header({ fixed = false }: { fixed?: boolean }) {
     >
       <div className="w-full px-0 py-3 grid grid-cols-[auto_1fr_auto] items-center">
         <div className="justify-self-start pl-2">
-          <Image src={withBase('/logo.svg')} alt="Jain logo" width={120} height={100} />
+          <button
+            type="button"
+            aria-label={t('home')}
+            title={t('home')}
+            onClick={goHome}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                goHome();
+              }
+            }}
+            className="inline-flex items-center rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--farm-green)] cursor-pointer transition duration-150 ease-out hover:opacity-90 hover:scale-[1.01]"
+          >
+            <Image src={withBase('/logo.svg')} alt="Jain logo" width={120} height={100} priority />
+          </button>
         </div>
         
         <div className="justify-self-center text-center">

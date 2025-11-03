@@ -161,6 +161,7 @@ export const dictionaries: Record<LangCode, Dict> = {
       greenPea: 'Green Pea',
       mango: 'Mango',
       banana: 'Banana',
+      bananaOne: 'Banana One',
       apple: 'Apple',
       grapes: 'Grapes',
       guava: 'Guava',
