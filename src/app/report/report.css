@@ -6,7 +6,7 @@
   --primary: #1f8a4c;
   --primary-ink: #0c5a2e;
   --border: #e5e7eb;
-  --header-h: 0px;
+  --header-h: 63px;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }

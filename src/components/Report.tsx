@@ -295,10 +295,9 @@ export default function Report() {
       tester.src = candidate;
     });
 
-    // Set dynamic header height CSS variable
+    // Set fixed header height CSS variable to prevent UI distortion on refresh
     const setHeaderHeight = () => {
-      const h = header?.offsetHeight || 0;
-      document.documentElement.style.setProperty("--header-h", `${h}px`);
+      document.documentElement.style.setProperty("--header-h", "63px");
     };
     setHeaderHeight();
     window.addEventListener("resize", setHeaderHeight);

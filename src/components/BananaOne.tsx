@@ -286,8 +286,7 @@ export default function BananaOne({ initialCategory = "fruits", initialFruit = "
     toTop.addEventListener("click", onTop);
 
     const setHeaderHeight = () => {
-      const h = header?.offsetHeight || 0;
-      document.documentElement.style.setProperty("--header-h", `${h}px`);
+      document.documentElement.style.setProperty("--header-h", "63px");
     };
     setHeaderHeight();
     window.addEventListener("resize", setHeaderHeight);

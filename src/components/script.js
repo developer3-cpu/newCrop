@@ -69,8 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const header = document.querySelector('.site-header');
   const setHeaderHeight = () => {
     if (!header) return;
-    const h = header.offsetHeight;
-    document.documentElement.style.setProperty('--header-h', `${h}px`);
+    // Use fixed header height to avoid layout shift during refresh
+    document.documentElement.style.setProperty('--header-h', '63px');
   };
   setHeaderHeight();
   window.addEventListener('resize', setHeaderHeight);
