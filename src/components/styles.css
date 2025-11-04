@@ -6,7 +6,7 @@
   --primary: #1f8a4c;
   --primary-ink: #0c5a2e;
   --border: #e5e7eb;
-  --header-h: 0px; /* dynamic header height, updated via JS */
+  --header-h: 63px; /* dynamic header height, updated via JS */
 }
 
 * { box-sizing: border-box; }
