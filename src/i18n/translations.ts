@@ -18,42 +18,42 @@ export const languages: { code: LangCode; name: string }[] = [
 ];
 
   type Dict = {
-  portalName: string;
-  categories: {
-    fruits: string;
-    grains: string;
-    vegetables: string;
-    spices: string;
-    flowers: string;
-    cashCrops: string;
-    oilSeeds: string;
-    pulses: string;
-    plantationCrops: string;
-  };
-  cropNames: {
-    tomato: string;
-    potato: string;
-    okra: string;
-    brinjal: string;
-    cabbage: string;
-    cauliflower: string;
-    capsicum: string;
-    cucumber: string;
-    onion: string;
-    greenChilli: string;
-    greenPea: string;
-    mango: string;
-    banana: string;
-    apple: string;
-    grapes: string;
-    guava: string;
-    lemon: string;
-    watermelon: string;
-    muskmelon: string;
-    papaya: string;
-    custardApple: string;
-    dragonFruit: string;
-    strawberry: string;
+    portalName: string;
+    categories: {
+      fruits: string;
+      grains: string;
+      vegetables: string;
+      spices: string;
+      flowers: string;
+      cashCrops: string;
+      oilSeeds: string;
+      pulses: string;
+      plantationCrops: string;
+    };
+    cropNames: {
+      tomato: string;
+      potato: string;
+      okra: string;
+      brinjal: string;
+      cabbage: string;
+      cauliflower: string;
+      capsicum: string;
+      cucumber: string;
+      onion: string;
+      greenChilli: string;
+      greenPea: string;
+      mango: string;
+      banana: string;
+      apple: string;
+      grapes: string;
+      guava: string;
+      lemon: string;
+      watermelon: string;
+      muskmelon: string;
+      papaya: string;
+      custardApple: string;
+      dragonFruit: string;
+      strawberry: string;
     // Additional crops across categories
     Rice: string;
     Wheat: string;
@@ -84,32 +84,36 @@ export const languages: { code: LangCode; name: string }[] = [
     coffee: string;
     tea: string;
     rubber: string;
-    coconut: string;
-    [key: string]: string;
-  };
-  language: string;
-  viewAll: string;
-  report?: {
-    navTitle: string;
-    nav: {
-      cropBasics: string;
-      soil: string;
-      climate: string;
-      varieties: string;
-      seedRate: string;
-      landPrep: string;
-      nutrients: string;
-      irrigation: string;
-      pests: string;
-      weeds: string;
-      harvest: string;
-      postHarvest: string;
-      mandi: string;
-      schemes: string;
-      education: string;
-      feedback: string;
-      implinks: string;
+      coconut: string;
+      [key: string]: string;
     };
+    language: string;
+    viewAll: string;
+    home?: {
+      heroTitle: string;
+      heroSubtitle: string;
+    };
+    report?: {
+      navTitle: string;
+      nav: {
+        cropBasics: string;
+        soil: string;
+        climate: string;
+        varieties: string;
+        seedRate: string;
+        landPrep: string;
+        nutrients: string;
+        irrigation: string;
+        pests: string;
+        weeds: string;
+        harvest: string;
+        postHarvest: string;
+        mandi: string;
+        schemes: string;
+        education: string;
+        feedback: string;
+        implinks: string;
+      };
     intro: { title: string; description: string };
     cropBasics: { title: string; summary: string; items: { names: string; growthCycle: string; climate: string; calendar: string }; figcaption: string };
     soil: { title: string; summary: string; items: { soilType: string; phRange: string; drainage: string; tests: string }; figcaption: string };
@@ -212,6 +216,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'Language',
     viewAll: 'View All',
+    home: {
+      heroTitle: 'Welcome to Jain’s Crop Knowledge',
+      heroSubtitle: 'Transforming Lives; Enhancing Prosperity.',
+    },
     report: {
       navTitle: 'Navigation',
       nav: {
@@ -496,6 +504,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'भाषा',
     viewAll: 'सभी देखें',
+    home: {
+      heroTitle: 'जैन की फसल ज्ञान में आपका स्वागत है',
+      heroSubtitle: 'जीवन बदलना; समृद्धि बढ़ाना।',
+    },
     report: {
       navTitle: 'नेविगेशन',
       nav: {
@@ -780,6 +792,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'ভাষা',
     viewAll: 'সব দেখুন',
+    home: {
+      heroTitle: 'জৈনের ফসল জ্ঞানে আপনাকে স্বাগতম',
+      heroSubtitle: 'জীবন পরিবর্তন; সমৃদ্ধি বৃদ্ধি।',
+    },
     report: {
       navTitle: 'নেভিগেশন',
       nav: {
@@ -1064,6 +1080,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'భాష',
     viewAll: 'అన్నీ చూడండి',
+    home: {
+      heroTitle: 'జైన్ పంట జ్ఞానానికి స్వాగతం',
+      heroSubtitle: 'జీవితాలను మారుస్తూ; అభివృద్ధిని పెంచుతూ.',
+    },
     report: {
       navTitle: 'నావిగేషన్',
       nav: {
@@ -1348,6 +1368,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'भाषा',
     viewAll: 'सर्व पहा',
+    home: {
+      heroTitle: 'जैन यांच्या पीक ज्ञानात आपले स्वागत आहे',
+      heroSubtitle: 'जीवन बदलत आहे; समृद्धी वाढवत आहे.',
+    },
     report: {
       navTitle: 'नेव्हिगेशन',
       nav: {
@@ -1632,6 +1656,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'மொழி',
     viewAll: 'அனைத்தையும் காண்க',
+    home: {
+      heroTitle: 'ஜெயின் பயிர் அறிவுக்கு வரவேற்கிறோம்',
+      heroSubtitle: 'வாழ்க்கையை மாற்றுதல்; வளத்தை உயர்த்துதல்.',
+    },
     report: {
       navTitle: 'வழிசெலுத்தல்',
       nav: {
@@ -1916,6 +1944,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'ભાષા',
     viewAll: 'બધું જુઓ',
+    home: {
+      heroTitle: 'જૈનની પાક જ્ઞાનમાં આપનું સ્વાગત છે',
+      heroSubtitle: 'જીવન બદલતા; સમૃદ્ધિ વધારતા.',
+    },
     report: {
       navTitle: 'નેવિગેશન',
       nav: {
@@ -2200,6 +2232,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'ಭಾಷೆ',
     viewAll: 'ಎಲ್ಲವನ್ನೂ ನೋಡಿ',
+    home: {
+      heroTitle: 'ಜೈನ್ ಅವರ ಬೆಳೆ ಜ್ಞಾನಕ್ಕೆ ಸ್ವಾಗತ',
+      heroSubtitle: 'ಜೀವನಗಳನ್ನು ರೂಪಿಸುವುದು; ಸಮೃದ್ಧಿಯನ್ನು ಹೆಚ್ಚಿಸುವುದು.',
+    },
     report: {
       navTitle: 'ನಾವಿಗೇಷನ್',
       nav: {
@@ -2484,6 +2520,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'ഭാഷ',
     viewAll: 'എല്ലാം കാണുക',
+    home: {
+      heroTitle: 'ജെയ്നിന്റെ കൃഷി വിജ്ഞാനത്തിലേക്ക് സ്വാഗതം',
+      heroSubtitle: 'ജീവിതം മാറ്റി; സമൃദ്ധി വർധിപ്പിക്കുന്നു.',
+    },
     report: {
       navTitle: 'നാവിഗേഷൻ',
       nav: {
@@ -2768,6 +2808,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'ਭਾਸ਼ਾ',
     viewAll: 'ਸਭ ਵੇਖੋ',
+    home: {
+      heroTitle: 'ਜੈਨ ਦੇ ਫਸਲ ਗਿਆਨ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ',
+      heroSubtitle: 'ਜੀਵਨ ਬਦਲਣਾ; ਖੁਸ਼ਹਾਲੀ ਵਧਾਉਣਾ।',
+    },
     report: {
       navTitle: 'ਨੇਵੀਗੇਸ਼ਨ',
       nav: {
@@ -3052,6 +3096,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'ଭାଷା',
     viewAll: 'ସମସ୍ତ ଦେଖନ୍ତୁ',
+    home: {
+      heroTitle: 'ଜେନଙ୍କ ଚାଷ ଜ୍ଞାନକୁ ସ୍ୱାଗତ',
+      heroSubtitle: 'ଜୀବନ ପରିବର୍ତ୍ତନ; ସମୃଦ୍ଧି ବୃଦ୍ଧି।',
+    },
     report: {
       navTitle: 'ନାଭିଗେଶନ',
       nav: {
@@ -3336,6 +3384,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'ভাষা',
     viewAll: 'সকলো চাওক',
+    home: {
+      heroTitle: 'জেইনৰ খেতি জ্ঞানত আপুনি স্বাগতম',
+      heroSubtitle: 'জীৱন সলনি কৰা; সমৃদ্ধি বৃদ্ধি কৰা।',
+    },
     report: {
       navTitle: 'নেভিগেশন',
       nav: {
@@ -3620,6 +3672,10 @@ export const dictionaries: Record<LangCode, Dict> = {
     },
     language: 'زبان',
     viewAll: 'سب دیکھیں',
+    home: {
+      heroTitle: 'جین کے فصل علم میں خوش آمدید',
+      heroSubtitle: 'زندگیاں بدلنا؛ خوشحالی بڑھانا۔',
+    },
     report: {
       navTitle: 'نیویگیشن',
       nav: {

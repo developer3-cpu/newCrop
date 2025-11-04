@@ -1,8 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { useI18n } from "@/i18n/I18nContext";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -10,97 +10,78 @@ const withBase = (p: string) => `${BASE}${p}`;
 
 type FlowerKey = "marigold" | "rose" | "chrysanthemum";
 
-const labelFor = (key: FlowerKey) => {
-  switch (key) {
-    case "marigold":
-      return "Marigold";
-    case "rose":
-      return "Rose";
-    case "chrysanthemum":
-      return "Chrysanthemum";
-  }
-};
-
 const FLOWERS: { key: FlowerKey; src: string; bg: string; hoverBg: string }[] = [
-  { key: "marigold", src: withBase("/flowers/marigold.png"), bg: "bg-[#FFF1D6]", hoverBg: "group-hover:bg-[#FFE7C2]" },
-  { key: "rose", src: withBase("/flowers/rose.png"), bg: "bg-[#FFE6EC]", hoverBg: "group-hover:bg-[#FFDDE4]" },
-  { key: "chrysanthemum", src: withBase("/flowers/chrysanthemum.png"), bg: "bg-[#E8F5E9]", hoverBg: "group-hover:bg-[#C8E6C9]" }  
+  {
+    key: "marigold",
+    src: withBase("/flowers/marigold.png"),
+    bg: "bg-[#FFF1D6]",
+    hoverBg: "hover:bg-[#FFE7C2]",
+  },
+  {
+    key: "rose",
+    src: withBase("/flowers/rose.png"),
+    bg: "bg-[#FFE6EC]",
+    hoverBg: "hover:bg-[#FFDDE4]",
+  },
+  {
+    key: "chrysanthemum",
+    src: withBase("/flowers/chrysanthemum.png"),
+    bg: "bg-[#E8F5E9]",
+    hoverBg: "hover:bg-[#C8E6C9]",
+  },
 ];
 
 export default function FlowersTab() {
   const { t } = useI18n();
-  const router = useRouter();
-  const [animatingKey, setAnimatingKey] = useState<string | null>(null);
 
-  const cards = useMemo(
-    () =>
-      FLOWERS.map((f, idx) => ({
-        ...f,
-        id: f.key,
-        name: t(`cropNames.${f.key}`),
-        attrs: { image: f.src, accent: f.bg },
-        index: idx,
-      })),
-    [t]
-  );
-
-  const isFlowerKey = (v: string): v is FlowerKey => ["marigold", "rose", "chrysanthemum"].includes(v as FlowerKey);
-
-  const handleNavigate = (card: (typeof cards)[number]) => {
-    try {
-      if (!card || !isFlowerKey(card.key) || !card.name) {
-        console.warn("Invalid flower card data:", card);
-        router.push(`/report?category=flowers`);
-        return;
-      }
-      try {
-        sessionStorage.setItem("report:activeCategory", "flowers");
-        sessionStorage.setItem("ui:tablistVisible", "true");
-      } catch {}
-
-      setAnimatingKey(card.key);
-      const params = new URLSearchParams({
-        category: "flowers",
-        flower: card.key,
-        id: String(card.id),
-        name: card.name,
-        attrs: JSON.stringify(card.attrs),
-      });
-      const target = `/report?${params.toString()}`;
-      setTimeout(() => router.push(target), 160);
-    } catch (err) {
-      console.error("Navigation failed:", err);
-    }
-  };
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {cards.map((item) => (
-          <article
-            key={item.key}
-            onClick={() => handleNavigate(item)}
-            className={`bento p-4 group ${item.bg} flex flex-col items-center gap-3 cursor-pointer transition-all duration-200 ease-out ${
-              animatingKey === item.key ? "opacity-70 scale-[0.98]" : "hover:scale-[1.02]"
-            }`}
-            aria-label={t(`cropNames.${item.key}`)}
-          >
-            <div
-              className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-black/10 shadow-sm transition-colors duration-300 ease-in-out ${item.bg} ${item.hoverBg}`}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 justify-items-center">
+        {FLOWERS.map((item) => {
+          const handleClick = () => {
+            try {
+              sessionStorage.setItem("ui:tablistVisible", "true");
+              sessionStorage.setItem("report:activeCategory", "flowers");
+            } catch {}
+          };
+
+          return (
+            <motion.div
+              key={item.key}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
-              <Image
-                src={item.src}
-                alt={t(`cropNames.${item.key}`)}
-                width={112}
-                height={112}
-                loading="lazy"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <span className="text-sm font-medium text-gray-800 text-center">
-              {t(`cropNames.${item.key}`)}
-            </span>
-          </article>
-        ))}
+              <Link
+                href={`/report?flower=${item.key}`}
+                prefetch={false}
+                onClick={handleClick}
+                className="flex flex-col items-center gap-3 text-center"
+                aria-label={t(`cropNames.${item.key}`)}
+              >
+                <motion.div
+                  className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-transparent shadow-sm transition-all duration-300 ease-out ${item.bg} ${item.hoverBg}`}
+                  whileHover={{
+                    boxShadow: "0 6px 18px rgba(0,0,0,0.15)",
+                    rotate: [0, 1, -1, 0],
+                  }}
+                >
+                  <Image
+                    src={item.src}
+                    alt={t(`cropNames.${item.key}`)}
+                    width={112}
+                    height={112}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </motion.div>
+                <span className="text-sm font-medium text-gray-800">
+                  {t(`cropNames.${item.key}`)}
+                </span>
+              </Link>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );

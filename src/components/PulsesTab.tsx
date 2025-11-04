@@ -1,113 +1,99 @@
 "use client";
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
-import { useI18n } from '@/i18n/I18nContext';
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { useI18n } from "@/i18n/I18nContext";
 
-const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '';
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const withBase = (p: string) => `${BASE}${p}`;
 
-type PulseKey = 'bengalGram' | 'blackGram' | 'greenGram' | 'lentil' | 'redGram';
-
-const labelFor = (key: PulseKey) => {
-  switch (key) {
-    case 'bengalGram':
-      return 'Bengal Gram';
-    case 'blackGram':
-      return 'Black Gram';
-    case 'greenGram':
-      return 'Green Gram';
-    case 'lentil':
-      return 'Lentil';
-    case 'redGram':
-      return 'Red Gram';
-  }
-};
+type PulseKey = "bengalGram" | "blackGram" | "greenGram" | "lentil" | "redGram";
 
 const PULSES: { key: PulseKey; src: string; bg: string; hoverBg: string }[] = [
-  { key: 'bengalGram', src: withBase('/pulses/Bengal Gram.png'), bg: 'bg-[#FFF6E8]', hoverBg: 'group-hover:bg-[#FFEFD9]' },
-  { key: 'blackGram', src: withBase('/pulses/Black Gram.png'), bg: 'bg-[#FFF3F1]', hoverBg: 'group-hover:bg-[#FFEAE8]' },
-  { key: 'greenGram', src: withBase('/pulses/Green Gram.png'), bg: 'bg-[#F3FFF8]', hoverBg: 'group-hover:bg-[#EAFBF0]' },
-  { key: 'lentil', src: withBase('/pulses/Lentil.png'), bg: 'bg-[#EAF4FF]', hoverBg: 'group-hover:bg-[#E2EEFF]' },
-  { key: 'redGram', src: withBase('/pulses/Red Gram.png'), bg: 'bg-[#FFF1F1]', hoverBg: 'group-hover:bg-[#FFE6E6]' },
+  {
+    key: "bengalGram",
+    src: withBase("/pulses/Bengal Gram.png"),
+    bg: "bg-[#FFF6E8]",
+    hoverBg: "hover:bg-[#FFEFD9]",
+  },
+  {
+    key: "blackGram",
+    src: withBase("/pulses/Black Gram.png"),
+    bg: "bg-[#FFF3F1]",
+    hoverBg: "hover:bg-[#FFEAE8]",
+  },
+  {
+    key: "greenGram",
+    src: withBase("/pulses/Green Gram.png"),
+    bg: "bg-[#F3FFF8]",
+    hoverBg: "hover:bg-[#EAFBF0]",
+  },
+  {
+    key: "lentil",
+    src: withBase("/pulses/Lentil.png"),
+    bg: "bg-[#EAF4FF]",
+    hoverBg: "hover:bg-[#E2EEFF]",
+  },
+  {
+    key: "redGram",
+    src: withBase("/pulses/Red Gram.png"),
+    bg: "bg-[#FFF1F1]",
+    hoverBg: "hover:bg-[#FFE6E6]",
+  },
 ];
 
 export default function PulsesTab() {
   const { t } = useI18n();
-  const router = useRouter();
-  const [animatingKey, setAnimatingKey] = useState<string | null>(null);
 
-  const cards = useMemo(
-    () =>
-      PULSES.map((p, idx) => ({
-        ...p,
-        id: p.key,
-        name: t(`cropNames.${p.key}`),
-        attrs: { image: p.src, accent: p.bg },
-        index: idx,
-      })),
-    [t]
-  );
-
-  const isPulseKey = (v: string): v is PulseKey =>
-    ['bengalGram', 'blackGram', 'greenGram', 'lentil', 'redGram'].includes(v as PulseKey);
-
-  const handleNavigate = (card: (typeof cards)[number]) => {
-    try {
-      if (!card || !isPulseKey(card.key) || !card.name) {
-        console.warn('Invalid pulse card data:', card);
-        router.push(`/report?category=pulses`);
-        return;
-      }
-      try {
-        sessionStorage.setItem('report:activeCategory', 'pulses');
-        sessionStorage.setItem('ui:tablistVisible', 'true');
-      } catch {}
-
-      setAnimatingKey(card.key);
-      const params = new URLSearchParams({
-        category: 'pulses',
-        pulse: card.key,
-        id: String(card.id),
-        name: card.name,
-        attrs: JSON.stringify(card.attrs),
-      });
-      const target = `/report?${params.toString()}`;
-      setTimeout(() => router.push(target), 160);
-    } catch (err) {
-      console.error('Navigation failed:', err);
-    }
-  };
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {cards.map((item) => (
-          <article
-            key={item.key}
-            onClick={() => handleNavigate(item)}
-            className={`bento p-4 group ${item.bg} flex flex-col items-center gap-3 cursor-pointer transition-all duration-200 ease-out ${
-              animatingKey === item.key ? 'opacity-70 scale-[0.98]' : 'hover:scale-[1.02]'
-            }`}
-            aria-label={t(`cropNames.${item.key}`)}
-          >
-            <div
-              className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-black/10 shadow-sm transition-colors duration-300 ease-in-out ${item.bg} ${item.hoverBg}`}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 justify-items-center">
+        {PULSES.map((item) => {
+          const handleClick = () => {
+            try {
+              sessionStorage.setItem("ui:tablistVisible", "true");
+              sessionStorage.setItem("report:activeCategory", "pulses");
+            } catch {}
+          };
+
+          return (
+            <motion.div
+              key={item.key}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
-              <Image
-                src={item.src}
-                alt={t(`cropNames.${item.key}`)}
-                width={112}
-                height={112}
-                loading="lazy"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <span className="text-sm font-medium text-gray-800 text-center">
-              {t(`cropNames.${item.key}`)}
-            </span>
-          </article>
-        ))}
+              <Link
+                href={`/report?pulse=${item.key}`}
+                prefetch={false}
+                onClick={handleClick}
+                className="flex flex-col items-center gap-3 text-center"
+                aria-label={t(`cropNames.${item.key}`)}
+              >
+                <motion.div
+                  className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-transparent shadow-sm transition-all duration-300 ease-out ${item.bg} ${item.hoverBg}`}
+                  whileHover={{
+                    boxShadow: "0 6px 18px rgba(0,0,0,0.15)",
+                    rotate: [0, 1, -1, 0],
+                  }}
+                >
+                  <Image
+                    src={item.src}
+                    alt={t(`cropNames.${item.key}`)}
+                    width={112}
+                    height={112}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </motion.div>
+                <span className="text-sm font-medium text-gray-800">
+                  {t(`cropNames.${item.key}`)}
+                </span>
+              </Link>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
