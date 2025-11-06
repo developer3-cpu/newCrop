@@ -1,0 +1,152 @@
+
+
+/* Pulse animation - gentle breathing effect */
+@keyframes pulse-soft {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.5);
+  }
+}
+
+/* Bounce animation - playful attention grabber */
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Wiggle animation - friendly wave effect */
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
+/* Glow pulse - modern neon effect */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4),
+                0 0 40px rgba(59, 130, 246, 0.2),
+                0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6),
+                0 0 60px rgba(59, 130, 246, 0.3),
+                0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Ripple effect - attention-drawing circles */
+@keyframes ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7),
+                0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  40% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0),
+                0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  80% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0),
+                0 0 0 20px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0),
+                0 0 0 20px rgba(59, 130, 246, 0);
+  }
+}
+
+/* Shake animation - urgent notification style */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+  20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+/* Spin icon - rotating bot icon inside button */
+@keyframes spin-icon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Float animation - smooth up and down */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* // ===== USAGE EXAMPLES ===== */
+
+/* // Option 1: Gentle Pulse (Recommended - subtle and professional) */
+.chatbot-btn-pulse {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* // Option 2: Bounce (Playful and attention-grabbing) */
+.chatbot-btn-bounce {
+  animation: bounce-gentle 1.5s ease-in-out infinite;
+}
+
+/* // Option 3: Wiggle (Friendly wave effect) */
+.chatbot-btn-wiggle {
+  animation: wiggle 2.5s ease-in-out infinite;
+}
+
+/* // Option 4: Glow Pulse (Modern neon effect) */
+.chatbot-btn-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+/* 
+// Option 5: Ripple (Strong attention-drawer) */
+.chatbot-btn-ripple {
+  animation: ripple 2s ease-out infinite;
+}
+
+/* // Option 6: Shake (Urgent notification - use sparingly) */
+.chatbot-btn-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* // Option 7: Float (Smooth hover effect) */
+.chatbot-btn-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* // Option 8: Combined - Glow + Float (Premium feel) */
+.chatbot-btn-premium {
+  animation: glow-pulse 2s ease-in-out infinite, 
+             float 3s ease-in-out infinite;
+}
+
+/* // Icon-specific animation (for the bot icon inside) */
+.chatbot-icon-spin {
+  animation: spin-icon 2s linear infinite;
+}
+
+/* // Hover state enhancement */
+.chatbot-btn-animated:hover {
+  animation-play-state: paused;
+  transform: scale(1.15) !important;
+  transition: transform 0.3s ease;
+}

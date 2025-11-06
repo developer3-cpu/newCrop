@@ -9,13 +9,9 @@
   --farm-sky: #E3F2FD;
   --farm-wheat: #F4D06F;
   --farm-tomato: #FF6B6B;
-}
-
-@theme inline {
+  /* Aliases for older references; avoids @theme usage */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: SF Pro Display, SF Pro Text, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,7 +24,6 @@
 body {
   /* background: var(--background); */
   color: var(--foreground);
-  font-family: var(--font-sans);
 }
 
 .bento {
@@ -54,4 +49,26 @@ body {
   opacity: 0;
   transform: translateY(-4px);
   transition: opacity 160ms ease, transform 160ms ease;
+}
+
+/* Modal entrance animation for floating windows */
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-modal-in {
+  animation: modal-in 180ms ease-out both;
+}
+
+/* Screen reader utility (in case Tailwind variant is unavailable) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

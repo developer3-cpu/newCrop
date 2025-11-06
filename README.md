@@ -20,6 +20,22 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Features
+
+- Floating action buttons (bottom-right) for quick access:
+  - AI Chatbot: conversational assistant with smart replies
+  - Talk to Experts: audio-only consultations via phone
+  - Upcoming Events: browse and register for workshops
+
+### Talk to Experts (Audio-only)
+
+This portal provides audio consultations only. Video sessions are not supported. Use the "Call" action to connect with an expert.
+
+### Accessibility
+
+- Dialogs include ARIA roles/labels and keyboard support (ESC to close)
+- Touch-friendly targets (≥48×48px)
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
